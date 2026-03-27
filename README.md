@@ -67,29 +67,3 @@ ec2
 
 same idea as laptop but ubuntu + docker + scp the folder. i used tmux for long runs. didnt set up s3 for mlflow, you can point `MLFLOW_TRACKING_URI` somewhere else if your prof wants that.
 
----
-
-github
-
-my profile: https://github.com/Hanugnajarugumalli
-
-dont commit `.env` or `.venv` or `mlruns` — `.gitignore` already ignores those. the train jsonl is massive so its gitignored too; this project only needs the test split for `run_experiment.py`. bill format is explained in `billsum_v4_1/README.md`.
-
-github repo name cant have spaces so i used this slug (matches the project title):
-
-```
-https://github.com/Hanugnajarugumalli/multi-agent-llm-evaluation-prompt-optimization-pipeline.git
-```
-
-create that repo empty on github (same name) then:
-
-```
-git push -u origin main
-```
-
-if the repo name is different:
-
-```
-git remote set-url origin https://github.com/Hanugnajarugumalli/OTHER_NAME.git
-git push -u origin main
-```
