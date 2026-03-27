@@ -1,0 +1,9 @@
+services:
+  eval:
+    build: .
+    volumes:
+      - ./mlruns:/app/mlruns
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      MLFLOW_TRACKING_URI: file:/app/mlruns
+    command: ["python", "scripts/run_experiment.py", "--limit", "25", "--run-name", "compose_smoke"]

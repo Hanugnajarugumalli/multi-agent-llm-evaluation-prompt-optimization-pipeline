@@ -1,0 +1,32 @@
+# env / secrets
+.env
+.env.local
+.env.*.local
+
+# python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# mlflow / local runs
+mlruns/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# BillSum train set is ~213MB — GitHub blocks files > 100MB
+billsum_v4_1/us_train_data_final_OFFICIAL.jsonl
