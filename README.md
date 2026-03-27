@@ -73,14 +73,20 @@ Dataset format is described in `billsum_v4_1/README.md` (it’s the official Bil
 
 **Train file:** `us_train_data_final_OFFICIAL.jsonl` is huge (~213MB) and hits GitHub’s file size limit, so it’s listed in `.gitignore`. This project’s script uses the **test** split only; if you need train data, download it from the [BillSum source](https://github.com/FiscalNote/BillSum) separately.
 
-**Upload (this folder is already a git repo on `main` with one commit):**
+**Upload** — GitHub profile: [github.com/Hanugnajarugumalli](https://github.com/Hanugnajarugumalli). This repo is already on branch `main` with commits; `origin` is set to:
 
-1. On GitHub: **New repository** → name it → create **empty** repo (no README/license if you want a clean push).
+`https://github.com/Hanugnajarugumalli/billsum-multi-agent-eval.git`
+
+1. On GitHub (logged in as you): [**New repository**](https://github.com/new) → name it **`billsum-multi-agent-eval`** → create **empty** (no README / .gitignore / license).
 2. In the project folder:
 
 ```
-git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
 git push -u origin main
 ```
 
-If `git remote add` errors because `origin` exists, use `git remote set-url origin https://github.com/YOUR_USER/YOUR_REPO.git` instead.
+If you used a different repo name, run:
+
+```
+git remote set-url origin https://github.com/Hanugnajarugumalli/OTHER_REPO_NAME.git
+git push -u origin main
+```
