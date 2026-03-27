@@ -73,14 +73,14 @@ Dataset format is described in `billsum_v4_1/README.md` (it’s the official Bil
 
 **Train file:** `us_train_data_final_OFFICIAL.jsonl` is huge (~213MB) and hits GitHub’s file size limit, so it’s listed in `.gitignore`. This project’s script uses the **test** split only; if you need train data, download it from the [BillSum source](https://github.com/FiscalNote/BillSum) separately.
 
-First push from this folder:
+**Upload (this folder is already a git repo on `main` with one commit):**
+
+1. On GitHub: **New repository** → name it → create **empty** repo (no README/license if you want a clean push).
+2. In the project folder:
 
 ```
-git init
-git add .
-git status   # sanity check — no .env or mlruns
-git commit -m "Initial commit"
-git branch -M main
 git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
 git push -u origin main
 ```
+
+If `git remote add` errors because `origin` exists, use `git remote set-url origin https://github.com/YOUR_USER/YOUR_REPO.git` instead.
