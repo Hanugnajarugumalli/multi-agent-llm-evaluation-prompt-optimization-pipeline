@@ -1,12 +1,14 @@
-# BillSum multi-agent summarization project
+# billsum thing (multi agent vs single prompt)
 
-Final project for comparing a LangGraph setup (3 steps: notes → summary → extra “decision” blurb) vs a boring one-shot OpenAI prompt on the same bills. Scoring is ROUGE + a dumb word-overlap score I wrote because we didn’t have time to run human eval. MLflow logs runs under `./mlruns` if you don’t pass `--skip-mlflow`.
+built this for class — theres a langgraph with 3 steps (rough notes on the bill, then a paragraph summary, then a short “what to double check” part) and a baseline thats just one big prompt to the same model. i compare them on the billSum US test jsonl in `billsum_v4_1/`.
 
-Data is the US test jsonl in `billsum_v4_1/` — thousands of rows so you’re not evaluating on like 10 examples.
+for metrics i used rouge and also a really simple word overlap f1 against the reference summary bc we didnt do human ratings. mlflow saves runs in `./mlruns` unless you add `--skip-mlflow`.
 
-## Setup
+---
 
-Need Python 3.10+ (I used 3.11). From the folder:
+how to run it
+
+python 3.10 or newer is fine, i used 3.11.
 
 ```
 python3 -m venv .venv
@@ -14,79 +16,80 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Copy `cp .env.example .env` if you want to put your API key in a file instead of exporting it every time.
+you can `cp .env.example .env` and put your key there.
 
-**No key:** leave `OPENAI_API_KEY` blank and it uses a fake LLM that just chops the text up so the pipeline still runs (good for checking you didn’t break imports). Not useful for real numbers obviously.
+if you leave `OPENAI_API_KEY` empty it uses a fake “llm” that just cuts up the text — good for making sure nothing crashes, bad if you want real scores.
 
-**With OpenAI:**
+with a real key:
 
 ```
 export OPENAI_API_KEY=...
-PYTHONPATH=src python scripts/run_experiment.py --limit 50 --run-name try1
+PYTHONPATH=src python scripts/run_experiment.py --limit 50 --run-name whatever
 ```
 
-No `--limit` = whole test file (takes a while with the API, mock mode is quick).
+no `--limit` runs the whole test file. with the api that costs money; mock mode is fast but dumb.
 
-## Where stuff is
+---
 
-- `src/pipeline/graph/workflow.py` — the LangGraph
-- `src/pipeline/baselines/single_agent.py` — baseline
-- `src/pipeline/evaluation/metrics.py` — ROUGE + overlap F1
-- `scripts/run_experiment.py` — actually runs everything
+where i put code
 
-Main script flags: `--data` (path to jsonl), `--limit` (first N rows), `--run-name` (shows up in MLflow), `--skip-mlflow` (only print JSON to stdout).
+langgraph: `src/pipeline/graph/workflow.py`  
+baseline: `src/pipeline/baselines/single_agent.py`  
+scoring: `src/pipeline/evaluation/metrics.py`  
+main script: `scripts/run_experiment.py`
 
-Env vars are in `.env.example` — model name, max chars to truncate bills, mlflow experiment name, etc.
+flags i actually used: `--data` (jsonl path), `--limit`, `--run-name`, `--skip-mlflow`. env stuff is in `.env.example`.
 
-## MLflow
+---
+
+mlflow ui
 
 ```
 mlflow ui --backend-store-uri file:./mlruns
 ```
 
-Then open whatever port it says (usually 5000). There’s also a jsonl artifact per run with per-bill scores if something looks wrong.
+opens on some localhost port. each run has a jsonl with per-bill numbers if you need to debug.
 
-## Docker
+---
+
+docker
 
 ```
 docker build -t bill-eval .
 docker run --rm -v "$(pwd)/mlruns:/app/mlruns" bill-eval
 ```
 
-Pass `-e OPENAI_API_KEY=...` if you’re not using mock mode. There’s also `docker-compose.yml` if you want the volume mounted without typing it every time.
+add `-e OPENAI_API_KEY=...` if not using mock. theres `docker-compose.yml` too.
 
-## Running on EC2
+---
 
-Basically: Ubuntu instance, install docker, copy the repo over, same docker commands. Use tmux or screen for long jobs. I didn’t bother with S3 for mlflow but you can change `MLFLOW_TRACKING_URI` if your class requires it.
+ec2
 
-## Resume / portfolio
+same idea as laptop but ubuntu + docker + scp the folder. i used tmux for long runs. didnt set up s3 for mlflow, you can point `MLFLOW_TRACKING_URI` somewhere else if your prof wants that.
 
-If you’re writing this up: multi-agent code is under `graph/`, baseline under `baselines/`, metrics under `evaluation/`. Don’t copy fake % improvements from anywhere — run it yourself and put whatever your run actually got.
+---
 
-Dataset format is described in `billsum_v4_1/README.md` (it’s the official BillSum jsonlines).
+github
 
-## What to put on GitHub
+my profile: https://github.com/Hanugnajarugumalli
 
-**Include in the repo:** `README.md`, `requirements.txt`, `.env.example`, `.gitignore`, `Dockerfile`, `.dockerignore`, `docker-compose.yml`, everything under `src/`, `scripts/`, and `billsum_v4_1/README.md` plus the jsonl files you actually use (the default eval only needs `us_test_data_final_OFFICIAL.jsonl`).
+dont commit `.env` or `.venv` or `mlruns` — `.gitignore` already ignores those. the train jsonl is massive so its gitignored too; this project only needs the test split for `run_experiment.py`. bill format is explained in `billsum_v4_1/README.md`.
 
-**Do not commit:** `.env` (API keys), `.venv/` or `venv/`, `mlruns/` (MLflow output — regenerates when you run experiments).
+remote i used:
 
-**Train file:** `us_train_data_final_OFFICIAL.jsonl` is huge (~213MB) and hits GitHub’s file size limit, so it’s listed in `.gitignore`. This project’s script uses the **test** split only; if you need train data, download it from the [BillSum source](https://github.com/FiscalNote/BillSum) separately.
+```
+https://github.com/Hanugnajarugumalli/billsum-multi-agent-eval.git
+```
 
-**Upload** — GitHub profile: [github.com/Hanugnajarugumalli](https://github.com/Hanugnajarugumalli). This repo is already on branch `main` with commits; `origin` is set to:
-
-`https://github.com/Hanugnajarugumalli/billsum-multi-agent-eval.git`
-
-1. On GitHub (logged in as you): [**New repository**](https://github.com/new) → name it **`billsum-multi-agent-eval`** → create **empty** (no README / .gitignore / license).
-2. In the project folder:
+create that repo empty on github then:
 
 ```
 git push -u origin main
 ```
 
-If you used a different repo name, run:
+if the repo name is different:
 
 ```
-git remote set-url origin https://github.com/Hanugnajarugumalli/OTHER_REPO_NAME.git
+git remote set-url origin https://github.com/Hanugnajarugumalli/OTHER_NAME.git
 git push -u origin main
 ```
