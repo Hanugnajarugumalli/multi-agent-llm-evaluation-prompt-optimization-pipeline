@@ -1,6 +1,6 @@
-# billsum thing (multi agent vs single prompt)
+# Multi-Agent LLM Evaluation & Prompt Optimization Pipeline
 
-built this for class — theres a langgraph with 3 steps (rough notes on the bill, then a paragraph summary, then a short “what to double check” part) and a baseline thats just one big prompt to the same model. i compare them on the billSum US test jsonl in `billsum_v4_1/`.
+built for class — langgraph with 3 steps (rough notes on the bill, then a paragraph summary, then a short “what to double check” part) vs a baseline thats just one big prompt to the same model. evaluated on the billSum US test jsonl in `billsum_v4_1/`.
 
 for metrics i used rouge and also a really simple word overlap f1 against the reference summary bc we didnt do human ratings. mlflow saves runs in `./mlruns` unless you add `--skip-mlflow`.
 
@@ -75,13 +75,13 @@ my profile: https://github.com/Hanugnajarugumalli
 
 dont commit `.env` or `.venv` or `mlruns` — `.gitignore` already ignores those. the train jsonl is massive so its gitignored too; this project only needs the test split for `run_experiment.py`. bill format is explained in `billsum_v4_1/README.md`.
 
-remote i used:
+github repo name cant have spaces so i used this slug (matches the project title):
 
 ```
-https://github.com/Hanugnajarugumalli/billsum-multi-agent-eval.git
+https://github.com/Hanugnajarugumalli/multi-agent-llm-evaluation-prompt-optimization-pipeline.git
 ```
 
-create that repo empty on github then:
+create that repo empty on github (same name) then:
 
 ```
 git push -u origin main
